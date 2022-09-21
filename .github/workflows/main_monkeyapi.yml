@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'monkeyapi'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_16808BA8A6E44A62B19D20F93AFDF039 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7A2475A5B8B24D519A8E77742D5EBF59 }}
           package: .
