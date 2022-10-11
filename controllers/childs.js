@@ -1,5 +1,6 @@
 const { v4: uuid4 } = require("uuid");
 const { successMsg, failureMsg, printError } = require("../utils");
+const mongoose = require("mongoose");
 
 const Child = require("../models/childs");
 const User = require("../models/user");
@@ -19,12 +20,9 @@ const addChild = async (req, res) => {
     return;
   }
   // Check user exists
-  const user = await User.findOne(
-    {
-      id: req.body.userId,
-    },
-    { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
-  );
+  const user = await User.findOne({
+    userId: req.body.userId,
+  });
   if (!user) {
     failureMsg(res, "User not found");
     return;
@@ -34,7 +32,7 @@ const addChild = async (req, res) => {
   // Check school exists
   const school = await School.findOne(
     {
-      id: req.body.schoolId,
+      schoolId: req.body.schoolId,
     },
     { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
   );
@@ -63,6 +61,7 @@ const addChild = async (req, res) => {
   try {
     const newChild = new Child({
       id: uuid4(),
+      childId: uuid4(),
       name: req.body.name,
       userId: req.body.userId,
       schoolId: req.body.schoolId,
@@ -82,13 +81,23 @@ const getByUser = async (req, res) => {
     failureMsg(res, "userId is required");
     return;
   }
-  const childs = await Child.find(
+  let findResult = [];
+  findResult = await Child.find(
     {
       userId: req.body.userId,
     },
     { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
   );
-  successMsg(res, childs);
+  const resArray = [];
+  for (const child of findResult) {
+    const school = await School.findOne({
+      schoolId: child.schoolId,
+    }).select("schoolName");
+    child.set("schoolName", school ? school.schoolName : "", { strict: false });
+
+    resArray.push(child);
+  }
+  successMsg(res, resArray);
   return;
 };
 module.exports = {

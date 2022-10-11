@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const foodVendorSchema = mongoose.Schema({
-  id: {
+  foodVendorId: {
     type: String,
     required: true,
   },
@@ -15,4 +15,4 @@ const foodVendorSchema = mongoose.Schema({
 });
 foodVendorSchema.set("timestamps", true);
 
-module.exports = mongoose.model("FoodVendor", foodVendorSchema, "foodVendors");
+module.exports = mongoose.model("FoodVendor", foodVendorSchema, "foodVendor");

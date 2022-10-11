@@ -1,5 +1,11 @@
+const { v4: uuid4 } = require("uuid");
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+
+const generateId = () => {
+  return uuidv4();
+};
 
 const successMsg = (res, msg) => {
   const success = {
@@ -31,10 +37,12 @@ const encryptText = (str) => {
 const decryptText = (plainPassword, hashPassword) => {
   return bcrypt.compareSync(plainPassword, hashPassword);
 };
+
 module.exports = {
   successMsg,
   failureMsg,
   printError,
   encryptText,
   decryptText,
+  generateId,
 };

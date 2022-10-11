@@ -5,7 +5,7 @@ const schoolsRouter = require("./routes/schools");
 const childsRouter = require("./routes/childs");
 const foodVendorRouter = require("./routes/foodVendor");
 const deliveryVendorRouter = require("./routes/deliveryVendor");
-const { successMsg } = require("./utils");
+const foodItemsRouter = require("./routes/foodItems");
 
 require("./config/db");
 
@@ -19,6 +19,7 @@ app.use("/api/schools", schoolsRouter);
 app.use("/api/childs", childsRouter);
 app.use("/api/foodVendor", foodVendorRouter);
 app.use("/api/deliveryVendor", deliveryVendorRouter);
+app.use("/api/foodItems", foodItemsRouter);
 
 app.get("/", (req, res) => {
   // res.sendFile(__dirname + "/./views/index.html");

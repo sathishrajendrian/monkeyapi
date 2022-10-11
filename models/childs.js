@@ -11,7 +11,9 @@ const childSchema = mongoose.Schema({
   },
   userId: {
     type: String,
-    required: true,
+  },
+  childId: {
+    type: String,
   },
   schoolId: {
     type: String,
@@ -25,6 +27,9 @@ const childSchema = mongoose.Schema({
   },
   dob: {
     type: Date,
+  },
+  image: {
+    type: String,
   },
 });
 childSchema.set("timestamps", true);

@@ -14,10 +14,11 @@ const importFromExcel = async (req, res) => {
     try {
       const newSchool = new School({
         id: uuid4(),
-        name,
+        schoolId: uuid4(),
+        schoolName: name,
         address: "",
       });
-      await newSchool.save();
+      await newSchool.save().catch((e) => console.log(e));
     } catch (error) {
       printError(error);
     }
