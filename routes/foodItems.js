@@ -6,12 +6,14 @@ const {
   getallFoodItem,
   updateFoodItem,
   addtoCart,
+  getCartItems,
 } = require("../controllers/foodItems");
 
 router.post("/addCategory", addCategory);
 router.post("/addFoodItem", addFoodItem);
 router.post("/getallFoodItem", getallFoodItem);
 router.post("/updateFoodItem", updateFoodItem);
+router.post("/getCartItems", getCartItems);
 
 router.post("/addtoCart", addtoCart);
 module.exports = router;

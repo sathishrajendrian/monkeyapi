@@ -33,6 +33,12 @@ const foodItemSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  description: {
+    type: String,
+  },
+  foodType: {
+    type: String,
+  },
   id: {
     type: String,
   },

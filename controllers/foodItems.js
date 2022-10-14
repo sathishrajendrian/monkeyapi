@@ -1,16 +1,18 @@
 const { v4: uuid4 } = require("uuid");
+const config = require("./../config/config");
+
 const { successMsg, failureMsg, printError } = require("../utils");
 
 const FoodCategory = require("../models/foodCategory");
 const FoodItem = require("../models/FoodItem");
 const FoodCart = require("../models/foodCart");
+const foodCart = require("../models/foodCart");
 const addCategory = async (req, res) => {
   if (!req.body.categoryName) {
     failureMsg(res, "categoryName is required");
     return;
   }
 
-  // Check child exists
   const foodCategory = await FoodCategory.findOne(
     {
       categoryName: req.body.categoryName,
@@ -22,14 +24,12 @@ const addCategory = async (req, res) => {
     failureMsg(res, "Food Category already exists");
     return;
   }
-  //Check child exists
 
-  //Saving Child
   try {
     const newChild = new FoodCategory({
       categoryId: uuid4(),
       categoryName: req.body.categoryName,
-      status: req.body.status,
+      status: true,
     });
     await newChild.save();
     successMsg(res, "Food Category added Successfully");
@@ -75,6 +75,8 @@ const addFoodItem = async (req, res) => {
       inStock: req.body.inStock,
       availablity: req.body.availablity,
       image: req.body.image,
+      description: req.body.description,
+      foodType: req.body.foodType,
       foodItemId: uuid4(),
     });
     await newChild.save();
@@ -110,8 +112,7 @@ const getallFoodItem = async (req, res) => {
     );
   }
   foodItems = foodItems.map(function (item) {
-    item.set("currentDate", new Date().getDay(), { strict: false });
-    item.set("qty", Math.floor(Math.random() * 6) + 1, { strict: false });
+    item.set("currentDay", new Date().getDay(), { strict: false });
 
     return item;
   });
@@ -174,7 +175,7 @@ const addtoCart = async (req, res) => {
       successMsg(res, "deleted Successfully");
       return;
     }
-    existCheck.qty = 20;
+    existCheck.qty = req.body.qty;
     var query = { cartId: existCheck.cartId };
     await FoodCart.findOneAndUpdate(query, existCheck, { upsert: true });
     successMsg(res, "updated Successfully");
@@ -199,10 +200,71 @@ const addtoCart = async (req, res) => {
     }
   }
 };
+
+const getCartItems = async (req, res) => {
+  const cartItems = await FoodCart.find().where("userId").eq(req.body.userId);
+  const foodItems = await FoodItem.find();
+  const foodCategories = await FoodCategory.find();
+
+  const resArray = [];
+  let totalAmount = 0;
+  let taxValue = config.taxValue;
+  for (const cartItem of cartItems) {
+    const foodItem = foodItems.filter(
+      (x) => x.foodItemId === cartItem.foodItemId,
+    )[0];
+    cartItem.set("foodName", foodItem.foodName, {
+      strict: false,
+    });
+    cartItem.set("description", foodItem.description, {
+      strict: false,
+    });
+    cartItem.set("image", foodItem.image, {
+      strict: false,
+    });
+    cartItem.set("foodType", foodItem.foodType, {
+      strict: false,
+    });
+    cartItem.set("categoryId", foodItem.categoryId, {
+      strict: false,
+    });
+    cartItem.set(
+      "categoryName",
+      foodCategories.filter((x) => x.categoryId === foodItem.categoryId)[0]
+        .categoryName,
+      {
+        strict: false,
+      },
+    );
+    cartItem.set("sellPrice", foodItem.sellPrice, {
+      strict: false,
+    });
+    cartItem.set("mrp", foodItem.mrp, {
+      strict: false,
+    });
+    cartItem.set(
+      "total",
+      parseFloat(cartItem.qty) * parseFloat(foodItem.sellPrice),
+      {
+        strict: false,
+      },
+    );
+    cartItem.set("inStock", foodItem.inStock, {
+      strict: false,
+    });
+    //if (foodItem.inStock) {
+    totalAmount += parseFloat(cartItem.qty) * parseFloat(foodItem.sellPrice);
+    // }
+    resArray.push(cartItem);
+  }
+  let totalWithTax = totalAmount + (totalAmount * taxValue) / 100;
+  successMsg(res, { totalAmount, taxValue, totalWithTax, foodItems: resArray });
+};
 module.exports = {
   addCategory,
   addFoodItem,
   getallFoodItem,
   updateFoodItem,
   addtoCart,
+  getCartItems,
 };
