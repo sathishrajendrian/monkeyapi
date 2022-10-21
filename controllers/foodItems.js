@@ -39,6 +39,17 @@ const addCategory = async (req, res) => {
   }
 };
 
+const getCategory = async (req, res) => {
+  let foodCategorys = [];
+
+  foodCategorys = await FoodCategory.find(
+    {},
+    { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
+  );
+
+  successMsg(res, foodCategorys);
+};
+
 const addFoodItem = async (req, res) => {
   if (!req.body.categoryId) {
     failureMsg(res, "categoryId is required");
@@ -161,6 +172,7 @@ const updateFoodItem = async (req, res) => {
 };
 
 const addtoCart = async (req, res) => {
+  console.log("Called");
   const existCheck = await FoodCart.findOne()
     .where("foodItemId")
     .eq(req.body.foodItemId)
@@ -267,4 +279,5 @@ module.exports = {
   updateFoodItem,
   addtoCart,
   getCartItems,
+  getCategory,
 };

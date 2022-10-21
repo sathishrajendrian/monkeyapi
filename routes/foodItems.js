@@ -7,9 +7,12 @@ const {
   updateFoodItem,
   addtoCart,
   getCartItems,
+  getCategory,
 } = require("../controllers/foodItems");
 
 router.post("/addCategory", addCategory);
+router.post("/getCategory", getCategory);
+
 router.post("/addFoodItem", addFoodItem);
 router.post("/getallFoodItem", getallFoodItem);
 router.post("/updateFoodItem", updateFoodItem);
