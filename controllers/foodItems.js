@@ -4,7 +4,7 @@ const config = require("./../config/config");
 const { successMsg, failureMsg, printError } = require("../utils");
 
 const FoodCategory = require("../models/foodCategory");
-const FoodItem = require("../models/FoodItem");
+const FoodItem = require("../models/foodItem");
 const FoodCart = require("../models/foodCart");
 const foodCart = require("../models/foodCart");
 const addCategory = async (req, res) => {
