@@ -38,6 +38,25 @@ const decryptText = (plainPassword, hashPassword) => {
   return bcrypt.compareSync(plainPassword, hashPassword);
 };
 
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(
+  "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",
+);
+const sendMail = (email, subject, text) => {
+  sgMail
+    .send({
+      To: email,
+      from: "sathishrajendrian@email.com",
+      subject: subject,
+      text: text,
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+    .then((re) => {
+      console.log(re);
+    });
+};
 module.exports = {
   successMsg,
   failureMsg,
@@ -45,4 +64,5 @@ module.exports = {
   encryptText,
   decryptText,
   generateId,
+  sendMail,
 };
