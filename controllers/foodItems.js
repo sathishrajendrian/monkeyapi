@@ -6,7 +6,7 @@ const { successMsg, failureMsg, printError } = require("../utils");
 const FoodCategory = require("../models/foodCategory");
 const FoodItem = require("../models/foodItem");
 const FoodCart = require("../models/foodCart");
-const foodCart = require("../models/foodCart");
+
 const addCategory = async (req, res) => {
   if (!req.body.categoryName) {
     failureMsg(res, "categoryName is required");
@@ -172,12 +172,13 @@ const updateFoodItem = async (req, res) => {
 };
 
 const addtoCart = async (req, res) => {
-  console.log("Called");
   const existCheck = await FoodCart.findOne()
     .where("foodItemId")
     .eq(req.body.foodItemId)
     .where("userId")
-    .eq(req.body.userId);
+    .eq(req.body.userId)
+    .where("childId")
+    .eq(req.body.childId);
   if (existCheck) {
     if (parseFloat(req.body.qty) === 0) {
       // Delete
@@ -200,6 +201,7 @@ const addtoCart = async (req, res) => {
       const newChild = new FoodCart({
         userId: req.body.userId,
         foodItemId: req.body.foodItemId,
+        childId: req.body.childId,
         cartId: uuid4(),
         id: uuid4(),
         qty: req.body.qty,
@@ -214,7 +216,19 @@ const addtoCart = async (req, res) => {
 };
 
 const getCartItems = async (req, res) => {
-  const cartItems = await FoodCart.find().where("userId").eq(req.body.userId);
+  if (!req.body.userId) {
+    failureMsg(res, "userId is required");
+    return;
+  }
+  if (!req.body.childId) {
+    failureMsg(res, "childId is required");
+    return;
+  }
+  const cartItems = await FoodCart.find()
+    .where("userId")
+    .eq(req.body.userId)
+    .where("childId")
+    .eq(req.body.childId);
   const foodItems = await FoodItem.find();
   const foodCategories = await FoodCategory.find();
 

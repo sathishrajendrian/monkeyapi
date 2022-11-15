@@ -19,6 +19,10 @@ const foodCartSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  childId: {
+    type: String,
+    required: true,
+  },
 });
 foodCartSchema.set("timestamps", true);
 

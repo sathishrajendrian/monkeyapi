@@ -1,5 +1,5 @@
 const { v4: uuid4 } = require("uuid");
-const { successMsg, failureMsg, printError, sendMail } = require("../utils");
+const { successMsg, failureMsg, printError } = require("../utils");
 const mongoose = require("mongoose");
 
 const Child = require("../models/childs");
@@ -68,6 +68,7 @@ const addChild = async (req, res) => {
       class: req.body.class,
       section: req.body.section,
       dob: req.body.dob,
+      gender: req.body.gender,
     });
     await newChild.save();
     successMsg(res, "Child added Successfully");
@@ -77,7 +78,6 @@ const addChild = async (req, res) => {
   }
 };
 const getByUser = async (req, res) => {
-  sendMail("testsathish@mailinator.com", "Test subject", "Test body");
   if (!req.body.userId) {
     failureMsg(res, "userId is required");
     return;

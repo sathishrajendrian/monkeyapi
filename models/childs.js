@@ -31,6 +31,9 @@ const childSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  gender: {
+    type: String,
+  },
 });
 childSchema.set("timestamps", true);
 
